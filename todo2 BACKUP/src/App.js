@@ -6,7 +6,8 @@ function App() {
  
   const [userName, setUserName] = useState("Adam");
  
-  const [todoItems, setTodoItems] = useState([{action: "Buy Flowers", done: false},
+  const [todoItems, setTodoItems] = useState([
+    {action: "Buy Flowers", done: false},
     {action: "Get Shoes", done: false},
     {action: "Collect Tickets", done: true},
     {action: "Call Joe", done: false}
@@ -34,10 +35,28 @@ function App() {
       setNewItemText("");
     }
   }
+
+  const toggleTodo = (todo) => {
+    setTodoItems(todoItems.map(item =>
+      item.action === todo.action
+        ? { ...item, done: !item.done }
+        : item
+    ));
+  };
+
+  const todoTableRows = () => todoItems.map(item =>
+    <tr key={ item.action }>
+      <td>{ item.action }</td>
+      <td>
+        <input type="checkbox" checked={ item.done } 
+          onChange={ () => toggleTodo(item) } />
+      </td>
+    </tr>
+  )
  
   return (
     <div>
-      <h4 className="bg-primary text-white text-center p-2">
+      <h4 className="bg-info text-white text-center p-2">
         {userName}'s To Do List
         ({todoItems.filter(t => !t.done).length} items to do)
       </h4>
@@ -47,11 +66,23 @@ function App() {
           <input className="form-control"
             value={newItemText}
             onChange={updateNewTextValue} />
-          <button className="btn btn-primary mt-1"
+          <button className="btn btn-danger mt-1"
             onClick={ createNewTodo }>
             Add
           </button>
         </div>
+
+        <table className="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Done</th>
+            </tr>
+          </thead>
+          <tbody>
+            { todoTableRows() }
+          </tbody>
+        </table>
         
       </div>
     </div>
